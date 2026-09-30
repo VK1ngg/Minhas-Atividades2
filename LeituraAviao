@@ -10,13 +10,17 @@ typedef struct relatorio {
 
 int main(){
     Relatorio Leitura;
-    char InputEvento, InputAeroporto;
+    char InputEvento;
+    int InputAeroporto;
 
     printf("Este programa le os aviões que decolaram ou pousaram de um determinado aeroporto.\n");
     printf("Digite o número do aeroporto que deseja procurar: ");
-    scanf("%ld\n", &InputAeroporto);
+    scanf("%d", &InputAeroporto);
+    printf("%d\n", InputAeroporto);
+    while (getchar() != '\n');
     printf("Agora digite o que deseja buscar:\nDigite D se quiser ver as decolagens\nDigite P se quiser ver os pousos\n");
-    scanf("%c\n", &InputEvento);
+    scanf("%c", &InputEvento);
+    printf("%c\n", InputEvento);
     FILE *arquivo = fopen("P1_dados-voos-win.csv", "r");
 
     if (arquivo == NULL) {
@@ -27,7 +31,7 @@ int main(){
     while (!feof(arquivo)){
         fscanf(arquivo, "%ld,%c,%d,%d\n", &Leitura.timestamp, &Leitura.evento, &Leitura.aeroporto, &Leitura.voo);
         if (InputEvento == Leitura.evento && InputAeroporto == Leitura.aeroporto){
-            printf("%ld, %c, %d, %d\n", Leitura.timestamp, Leitura.evento, Leitura.aeroporto, Leitura.voo);
+            printf("%ld,%c,%d,%d\n", Leitura.timestamp, Leitura.evento, Leitura.aeroporto, Leitura.voo);
         }
     }
 
