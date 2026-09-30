@@ -1,0 +1,37 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct relatorio {
+    long timestamp;
+    char evento;
+    int aeroporto;
+    int voo;
+} Relatorio;
+
+int main(){
+    Relatorio Leitura;
+    char InputEvento, InputAeroporto;
+
+    printf("Este programa le os aviões que decolaram ou pousaram de um determinado aeroporto.\n");
+    printf("Digite o número do aeroporto que deseja procurar: ");
+    scanf("%ld\n", &InputAeroporto);
+    printf("Agora digite o que deseja buscar:\nDigite D se quiser ver as decolagens\nDigite P se quiser ver os pousos\n");
+    scanf("%c\n", &InputEvento);
+    FILE *arquivo = fopen("P1_dados-voos-win.csv", "r");
+
+    if (arquivo == NULL) {
+        perror("Erro abrindo arquivo.");
+        return 1;
+    }
+
+    while (!feof(arquivo)){
+        fscanf(arquivo, "%ld,%c,%d,%d\n", &Leitura.timestamp, &Leitura.evento, &Leitura.aeroporto, &Leitura.voo);
+        if (InputEvento == Leitura.evento && InputAeroporto == Leitura.aeroporto){
+            printf("%ld, %c, %d, %d\n", Leitura.timestamp, Leitura.evento, Leitura.aeroporto, Leitura.voo);
+        }
+    }
+
+    fclose(arquivo);
+
+    return 0;
+}
