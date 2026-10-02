@@ -8,34 +8,82 @@ typedef struct relatorio {
     int voo;
 } Relatorio;
 
-int main(){
-    Relatorio Leitura;
-    char InputEvento;
-    int InputAeroporto;
+void Introducao(){
+    printf("Este programa le os avioes que decolaram e pousaram de um determinado aeroporto.\n");
+    FILE *D = fopen("Decolagens.csv", "w");
+    FILE *P = fopen("Pousos.csv", "w");
+    fclose (D);
+    fclose (P);
+}
 
-    printf("Este programa le os aviões que decolaram ou pousaram de um determinado aeroporto.\n");
-    printf("Digite o número do aeroporto que deseja procurar: ");
-    scanf("%d", &InputAeroporto);
-    printf("%d\n", InputAeroporto);
-    while (getchar() != '\n');
-    printf("Agora digite o que deseja buscar:\nDigite D se quiser ver as decolagens\nDigite P se quiser ver os pousos\n");
-    scanf("%c", &InputEvento);
-    printf("%c\n", InputEvento);
-    FILE *arquivo = fopen("P1_dados-voos-win.csv", "r");
+int Input () {
+    int INPUT;
+    printf("Digite o numero do aeroporto que deseja procurar: ");
+    scanf("%d", &INPUT);
+    return INPUT;
+}
 
-    if (arquivo == NULL) {
-        perror("Erro abrindo arquivo.");
-        return 1;
-    }
-
+int Decolagens (int InputAeroporto, FILE *arquivo, Relatorio Leitura) {
+    printf("\nDecolagens do Aeroporto %d:\n", InputAeroporto);
+    FILE *D = fopen("Decolagens.csv", "a");
+    //fprintf(D, "\nDecolagens do Aeroporto %d:\n", InputAeroporto);
     while (!feof(arquivo)){
         fscanf(arquivo, "%ld,%c,%d,%d\n", &Leitura.timestamp, &Leitura.evento, &Leitura.aeroporto, &Leitura.voo);
-        if (InputEvento == Leitura.evento && InputAeroporto == Leitura.aeroporto){
+        if ('D' == Leitura.evento && InputAeroporto == Leitura.aeroporto){
             printf("%ld,%c,%d,%d\n", Leitura.timestamp, Leitura.evento, Leitura.aeroporto, Leitura.voo);
+            fprintf (D, "%ld,%c,%d,%d\n", Leitura.timestamp, Leitura.evento, Leitura.aeroporto, Leitura.voo);
         }
     }
+    fclose(D);
+    rewind(arquivo);
+    return 0;
+}
 
+int Pousos (int InputAeroporto, FILE *arquivo, Relatorio Leitura) {
+    printf("\nPousos do Aeroporto %d:\n", InputAeroporto);
+    FILE *P = fopen("Pousos.csv", "a");
+    //fprintf(P, "\nPousos do Aeroporto %d:\n", InputAeroporto);
+    while (!feof(arquivo)){
+        fscanf(arquivo, "%ld,%c,%d,%d\n", &Leitura.timestamp, &Leitura.evento, &Leitura.aeroporto, &Leitura.voo);
+        if ('P' == Leitura.evento && InputAeroporto == Leitura.aeroporto){
+            printf("%ld,%c,%d,%d\n", Leitura.timestamp, Leitura.evento, Leitura.aeroporto, Leitura.voo);
+            fprintf (P, "%ld,%c,%d,%d\n", Leitura.timestamp, Leitura.evento, Leitura.aeroporto, Leitura.voo);
+        }
+    }
+    fclose(P);
+    rewind(arquivo);
+    return 0;
+}
+
+FILE * Open(){
+    FILE *arquivo = fopen("P1_dados-voos-win.csv", "r");
+    if (arquivo == NULL) {
+        perror("Erro abrindo arquivo.");
+    }
+    else {
+        return arquivo;
+    }
+}
+
+void TryAgain(int *Repetir, FILE * arquivo){
     fclose(arquivo);
+    printf("\nDeseja buscar outro numero de aeroporto?\n");
+    printf("1- Sim     0- Nao\n");
+    scanf("%d", Repetir);
+}
 
+int main(){
+    Relatorio Leitura;
+    int InputAeroporto;
+    int Repetir = 1;
+
+    Introducao();
+    while(Repetir == 1){
+        InputAeroporto = Input();
+        FILE *arquivo = Open();
+        Decolagens(InputAeroporto, arquivo, Leitura);
+        Pousos(InputAeroporto, arquivo, Leitura);
+        TryAgain(&Repetir, arquivo);
+    }
     return 0;
 }
