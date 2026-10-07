@@ -1,0 +1,30 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+typedef struct pokemon {
+    char name[20];
+    char type[20];
+    int level;
+    int color;
+} Poke;
+
+void printPokemon(Poke p) {
+    printf("\033[%dm%s | %s | Nivel: %-3d\033[0m\n",
+           p.color, p.name, p.type, p.level);
+}
+
+int main() {
+    int contagem = 0;
+    Poke p;
+    int INPUT;
+    FILE *POKEMONS = fopen("entrada.csv", "r");
+    printf("\n=== Pokedex Colorida ===\n\n");
+    while (!feof(POKEMONS)){
+        fscanf(POKEMONS, "%s %s %d %d\n", &p.name, &p.type, &p.level, &p.color);
+        printPokemon(p);
+    //loop para imprimir os pokemons
+    }
+    scanf("%d", &INPUT);
+    return 0;
+}
